@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Order</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+<!-- ✅ NAVBAR -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="flex">
+
+    <!-- ✅ SIDEBAR -->
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <!-- ✅ MAIN CONTENT -->
+    <div class="p-6 w-full">
+        <h2 class="text-2xl font-bold mb-4">Add Order</h2>
+
+        <form th:action="@{/admin/add-order}" method="post" class="space-y-3">
+
+            <input type="text" name="customerName" placeholder="Customer Name"
+                   class="border p-2 w-full" required>
+
+            <input type="text" name="productName" placeholder="Product Name"
+                   class="border p-2 w-full" required>
+
+            <input type="number" name="quantity" placeholder="Quantity"
+                   class="border p-2 w-full" required>
+
+            <input type="number" name="totalPrice" placeholder="Total Price"
+                   class="border p-2 w-full" required>
+
+            <button type="submit"
+                    class="bg-green-500 text-white px-4 py-2 rounded">
+                Add Order
+            </button>
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>

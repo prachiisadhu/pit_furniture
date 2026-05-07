@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="navbar">
+    <header style="background: linear-gradient(135deg, #78350f 0%, #92400e 100%);" class="text-white shadow-2xl">
+        <div class="max-w-full px-6">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-4">
+                    <div class="text-3xl">🪑</div>
+                    <div>
+                        <h1 class="text-2xl font-bold">WoodCraft Furniture Admin</h1>
+                        <p class="text-amber-200 text-sm">Admin Dashboard</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6">
+                    <a href="/admin/dashboard" class="text-amber-200 hover:text-white transition text-sm font-medium">Dashboard</a>
+                    <a href="/admin/products" class="text-amber-200 hover:text-white transition text-sm font-medium">Products</a>
+                    <a href="/admin/orders" class="text-amber-200 hover:text-white transition text-sm font-medium">Orders</a>
+                    <a href="/logout" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">🚪 Logout</a>
+                    <div class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                        <span class="text-xl">👤</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</div>
+
+</body>
+</html>

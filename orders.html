@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!-- FILE: src/main/resources/templates/admin/orders.html -->
+<!-- REPLACE your existing admin/orders.html with this -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Orders - WoodCraft Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'DM Sans', sans-serif; background: #f5f0eb; }
+        .serif { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-stone-100">
+
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="flex">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <div class="flex-1 p-6">
+
+        <!-- PAGE HEADER -->
+        <div class="mb-6 flex items-center justify-between">
+            <div>
+                <h2 class="serif text-2xl font-bold text-stone-800">📦 All Orders</h2>
+                <p class="text-stone-500 text-sm mt-1">View and manage all customer orders</p>
+            </div>
+            <!-- STATS CHIPS -->
+            <div class="flex gap-3">
+                <span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full">
+                    Total: <span th:text="${orders.size()}">0</span> orders
+                </span>
+                <a href="/admin/dashboard" class="bg-amber-700 text-white text-xs font-bold px-4 py-1.5 rounded-full hover:bg-amber-800 transition">
+                    ← Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- ORDERS TABLE -->
+        <div class="bg-white rounded-2xl shadow overflow-hidden">
+            <div class="p-5 border-b border-stone-100 flex items-center justify-between">
+                <h3 class="serif text-lg font-bold text-stone-800">📋 Customer Orders</h3>
+                <p class="text-stone-400 text-sm"><span th:text="${orders.size()}">0</span> total orders</p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-stone-50">
+                        <tr>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">Order #</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">Customer</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">Product</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">Qty</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">Total (incl. GST)</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">Date</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">Status</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-100">
+                        <tr th:each="o : ${orders}" class="hover:bg-stone-50 transition">
+
+                            <!-- ORDER NUMBER -->
+                            <td class="px-5 py-4">
+                                <p class="font-mono text-xs font-bold text-stone-600" th:text="${o.orderNumber}">WC-000</p>
+                                <p class="text-xs text-stone-400">#<span th:text="${o.id}">0</span></p>
+                            </td>
+
+                            <!-- CUSTOMER -->
+                            <td class="px-5 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-sm">👤</div>
+                                    <div>
+                                        <p class="font-semibold text-stone-800 text-sm" th:text="${o.customerName}">Name</p>
+                                        <p class="text-xs text-stone-400" th:text="${o.customerPhone}">Phone</p>
+                                        <p class="text-xs text-stone-400 max-w-xs truncate"
+                                           th:text="${o.shippingAddress} + ', ' + ${o.city}">Address</p>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- PRODUCT -->
+                            <td class="px-5 py-4">
+                                <p class="font-semibold text-stone-800" th:text="${o.productName}">Product</p>
+                                <span class="text-xs bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-full"
+                                      th:text="${o.productCategory}">Category</span>
+                                <p class="text-xs text-stone-500 mt-1">Unit: ₹<span th:text="${#numbers.formatDecimal(o.unitPrice,0,'COMMA',2,'POINT')}">0</span></p>
+                            </td>
+
+                            <!-- QTY -->
+                            <td class="px-5 py-4 text-stone-600 font-semibold" th:text="${o.quantity}">1</td>
+
+                            <!-- TOTAL WITH GST -->
+                            <td class="px-5 py-4">
+                                <p class="font-bold text-stone-800">₹<span th:text="${#numbers.formatDecimal(o.grandTotal,0,'COMMA',2,'POINT')}">0</span></p>
+                                <p class="text-xs text-stone-400">Subtotal: ₹<span th:text="${#numbers.formatDecimal(o.subTotal,0,'COMMA',2,'POINT')}">0</span></p>
+                                <p class="text-xs text-stone-400">GST: ₹<span th:text="${#numbers.formatDecimal(o.gstAmount,0,'COMMA',2,'POINT')}">0</span></p>
+                            </td>
+
+                            <!-- DATE -->
+                            <td class="px-5 py-4 text-xs text-stone-500" th:text="${o.formattedDate}">Date</td>
+
+                            <!-- STATUS -->
+                            <td class="px-5 py-4">
+                                <span th:switch="${o.status}">
+                                    <span th:case="'CONFIRMED'" class="inline-block bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">✅ Confirmed</span>
+                                    <span th:case="'PROCESSING'" class="inline-block bg-yellow-100 text-yellow-700 text-xs font-bold px-2.5 py-1 rounded-full">⏳ Processing</span>
+                                    <span th:case="'SHIPPED'" class="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full">🚚 Shipped</span>
+                                    <span th:case="'DELIVERED'" class="inline-block bg-purple-100 text-purple-700 text-xs font-bold px-2.5 py-1 rounded-full">🎁 Delivered</span>
+                                    <span th:case="*" class="inline-block bg-stone-100 text-stone-600 text-xs font-bold px-2.5 py-1 rounded-full" th:text="${o.status}">-</span>
+                                </span>
+                            </td>
+
+                            <!-- ACTIONS: Status Update + View Bill -->
+                            <td class="px-5 py-4">
+                                <div class="flex flex-col gap-1.5">
+                                    <!-- STATUS UPDATE FORM -->
+                                    <form th:action="@{/admin/updateOrderStatus}" method="post" class="flex gap-1">
+                                        <input type="hidden" name="orderId" th:value="${o.id}">
+                                        <select name="status"
+                                                class="text-xs border border-stone-300 rounded-lg px-2 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold">
+                                            <option value="CONFIRMED"   th:selected="${o.status == 'CONFIRMED'}">✅ Confirmed</option>
+                                            <option value="PROCESSING"  th:selected="${o.status == 'PROCESSING'}">⏳ Processing</option>
+                                            <option value="SHIPPED"     th:selected="${o.status == 'SHIPPED'}">🚚 Shipped</option>
+                                            <option value="DELIVERED"   th:selected="${o.status == 'DELIVERED'}">🎁 Delivered</option>
+                                            <option value="CANCELLED"   th:selected="${o.status == 'CANCELLED'}">❌ Cancelled</option>
+                                        </select>
+                                        <button type="submit"
+                                                class="bg-amber-700 text-white text-xs px-2 py-1 rounded-lg hover:bg-amber-800 transition font-semibold">
+                                            Save
+                                        </button>
+                                    </form>
+                                    <!-- VIEW BILL LINK -->
+                                    <a th:href="@{/user/bill/{id}(id=${o.id})}" target="_blank"
+                                       class="text-xs bg-stone-100 hover:bg-stone-200 text-stone-700 px-3 py-1 rounded-lg font-semibold transition text-center">
+                                        🧾 View Bill
+                                    </a>
+                                </div>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div th:if="${orders.isEmpty()}" class="p-16 text-center text-stone-400">
+                    <div class="text-5xl mb-3">📦</div>
+                    <h3 class="text-lg font-semibold mb-1">No orders yet</h3>
+                    <p class="text-sm">Orders placed by customers will appear here.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="sidebar">
+    <div class="w-64 min-h-screen p-5 flex flex-col" style="background: #1c1917;">
+        <div class="mb-8">
+            <p class="text-xs text-stone-400 uppercase tracking-widest font-semibold mb-3">Navigation</p>
+            <a href="/admin/dashboard"
+               class="flex items-center gap-3 text-stone-300 hover:text-white hover:bg-white hover:bg-opacity-10 rounded-lg px-3 py-2.5 mb-1 transition font-medium text-sm">
+                <span class="text-lg">📊</span> Dashboard
+            </a>
+            <a href="/admin/products"
+               class="flex items-center gap-3 text-stone-300 hover:text-white hover:bg-white hover:bg-opacity-10 rounded-lg px-3 py-2.5 mb-1 transition font-medium text-sm">
+                <span class="text-lg">🪑</span> Products
+            </a>
+            <a href="/admin/add-product"
+               class="flex items-center gap-3 text-stone-300 hover:text-white hover:bg-white hover:bg-opacity-10 rounded-lg px-3 py-2.5 mb-1 transition font-medium text-sm">
+                <span class="text-lg">➕</span> Add Product
+            </a>
+            <a href="/admin/orders"
+               class="flex items-center gap-3 text-stone-300 hover:text-white hover:bg-white hover:bg-opacity-10 rounded-lg px-3 py-2.5 mb-1 transition font-medium text-sm">
+                <span class="text-lg">📦</span> Orders
+            </a>
+        </div>
+        <div class="mt-auto">
+            <a href="/logout"
+               class="flex items-center gap-3 text-red-400 hover:text-red-300 hover:bg-red-900 hover:bg-opacity-30 rounded-lg px-3 py-2.5 transition font-medium text-sm">
+                <span class="text-lg">🚪</span> Logout
+            </a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

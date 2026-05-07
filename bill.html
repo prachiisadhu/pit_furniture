@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<!-- FILE: src/main/resources/templates/user/bill.html -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Invoice - WoodCraft</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'DM Sans', sans-serif; background: #f5f0eb; }
+        .serif { font-family: 'Playfair Display', serif; }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #fff !important; }
+            .bill-paper { box-shadow: none !important; border-radius: 0 !important; }
+            .outer-wrap { padding: 0 !important; max-width: 100% !important; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR (hidden on print) -->
+<header class="no-print" style="background: linear-gradient(135deg, #1c0f05 0%, #3b1f0a 100%);">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="flex justify-between items-center h-16 text-white">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🪑</span>
+                <span class="text-xl font-bold">WoodCraft</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="/user/shop" class="text-amber-200 hover:text-white text-sm">🛍️ Shop</a>
+                <a href="/user/my-orders" class="text-amber-200 hover:text-white text-sm">📦 My Orders</a>
+                <a href="/logout" class="bg-white bg-opacity-20 text-white text-sm font-semibold px-4 py-1.5 rounded-lg">Logout</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- TOP ACTION BAR (hidden on print) -->
+<div class="no-print max-w-3xl mx-auto px-6 py-5 flex items-center justify-between">
+    <div>
+        <h2 class="serif text-xl font-bold text-stone-800">GST Tax Invoice</h2>
+        <p class="text-sm text-stone-500 mt-0.5">Ready for print or download</p>
+    </div>
+    <div class="flex gap-3">
+        <a th:href="@{/user/my-orders}"
+           class="border border-stone-300 text-stone-700 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-stone-100 transition">
+            ← Back to Orders
+        </a>
+        <button onclick="window.print()"
+                class="bg-amber-700 hover:bg-amber-800 text-white px-5 py-2 rounded-xl text-sm font-semibold transition">
+            🖨️ Print / Save PDF
+        </button>
+    </div>
+</div>
+
+<!-- BILL PAPER -->
+<div class="outer-wrap max-w-3xl mx-auto px-6 pb-12">
+    <div class="bill-paper bg-white rounded-2xl shadow-lg p-10">
+
+        <!-- HEADER: COMPANY + INVOICE META -->
+        <div class="flex justify-between items-start pb-6 border-b-2 border-stone-100">
+            <div class="flex items-start gap-4">
+                <div class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl flex-shrink-0"
+                     style="background: linear-gradient(135deg, #78350f, #92400e)">🪑</div>
+                <div>
+                    <h2 class="serif text-xl font-bold text-stone-900">WoodCraft Furniture</h2>
+                    <p class="text-xs text-stone-500 mt-0.5">GSTIN: 24AABCW1234Z1Z5 · PAN: AABCW1234Z</p>
+                    <p class="text-xs text-stone-500">B/204, Commercial Complex, CG Road, Ahmedabad – 380009, Gujarat</p>
+                    <p class="text-xs text-stone-500">📧 support@woodcraft.in  |  📞 +91 79 4567 8901</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <span class="inline-block bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-lg mb-2">TAX INVOICE</span>
+                <p class="text-sm font-bold text-stone-800">Order # <span th:text="${order.orderNumber}">WC-00000</span></p>
+                <p class="text-xs text-stone-500 mt-1" th:text="${order.formattedDate}">Date</p>
+                <span class="inline-flex items-center gap-1 mt-2 bg-green-100 text-green-700 font-bold text-xs px-3 py-1 rounded-lg border border-green-200">
+                    ✅ PAID
+                </span>
+            </div>
+        </div>
+
+        <!-- BILL PARTIES -->
+        <div class="grid grid-cols-2 gap-8 my-6">
+            <div>
+                <p class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">From</p>
+                <p class="font-bold text-stone-800">WoodCraft Furniture Pvt. Ltd.</p>
+                <p class="text-sm text-stone-600 mt-1 leading-relaxed">
+                    B/204, Commercial Complex, CG Road<br>
+                    Ahmedabad – 380009, Gujarat, India<br>
+                    GSTIN: 24AABCW1234Z1Z5
+                </p>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">Bill To</p>
+                <p class="font-bold text-stone-800" th:text="${order.customerName}">Customer</p>
+                <p class="text-sm text-stone-600 mt-1 leading-relaxed">
+                    <span th:text="${order.shippingAddress}">Address</span><br>
+                    <span th:text="${order.city}">City</span> –
+                    <span th:text="${order.pincode}">Pincode</span><br>
+                    📞 <span th:text="${order.customerPhone}">Phone</span><br>
+                    📧 <span th:text="${order.customerEmail}">Email</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- ITEMS TABLE -->
+        <table class="w-full text-sm mb-6">
+            <thead>
+                <tr style="background: #1c1917; color: #fff;">
+                    <th class="px-4 py-3 text-left font-semibold text-xs tracking-wide rounded-tl-lg">#</th>
+                    <th class="px-4 py-3 text-left font-semibold text-xs tracking-wide">Product Description</th>
+                    <th class="px-4 py-3 text-left font-semibold text-xs tracking-wide">HSN Code</th>
+                    <th class="px-4 py-3 text-left font-semibold text-xs tracking-wide">Category</th>
+                    <th class="px-4 py-3 text-center font-semibold text-xs tracking-wide">Qty</th>
+                    <th class="px-4 py-3 text-right font-semibold text-xs tracking-wide">Unit Price</th>
+                    <th class="px-4 py-3 text-right font-semibold text-xs tracking-wide rounded-tr-lg">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-b border-stone-100">
+                    <td class="px-4 py-4 text-stone-500">1</td>
+                    <td class="px-4 py-4 font-semibold text-stone-800" th:text="${order.productName}">Product</td>
+                    <td class="px-4 py-4 text-stone-500 font-mono text-xs">9401</td>
+                    <td class="px-4 py-4">
+                        <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2 py-0.5 rounded-full"
+                              th:text="${order.productCategory}">Category</span>
+                    </td>
+                    <td class="px-4 py-4 text-center text-stone-600" th:text="${order.quantity}">1</td>
+                    <td class="px-4 py-4 text-right text-stone-700">
+                        ₹<span th:text="${#numbers.formatDecimal(order.unitPrice,0,'COMMA',2,'POINT')}">0</span>
+                    </td>
+                    <td class="px-4 py-4 text-right font-bold text-stone-800">
+                        ₹<span th:text="${#numbers.formatDecimal(order.subTotal,0,'COMMA',2,'POINT')}">0</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- TOTALS SECTION -->
+        <div class="flex justify-end mb-6">
+            <div class="w-72">
+                <div class="flex justify-between text-sm py-2 border-b border-stone-100 text-stone-600">
+                    <span>Taxable Amount</span>
+                    <span class="font-semibold text-stone-800">₹<span th:text="${#numbers.formatDecimal(order.subTotal,0,'COMMA',2,'POINT')}">0</span></span>
+                </div>
+                <div class="flex justify-between text-xs py-2 border-b border-stone-100 text-stone-500">
+                    <span>CGST @ 9%</span>
+                    <span>₹<span th:text="${#numbers.formatDecimal(order.gstAmount / 2,0,'COMMA',2,'POINT')}">0</span></span>
+                </div>
+                <div class="flex justify-between text-xs py-2 border-b border-stone-100 text-stone-500">
+                    <span>SGST @ 9%</span>
+                    <span>₹<span th:text="${#numbers.formatDecimal(order.gstAmount / 2,0,'COMMA',2,'POINT')}">0</span></span>
+                </div>
+                <div class="flex justify-between text-sm py-2 border-b border-stone-100 text-stone-600 font-semibold">
+                    <span>Total GST (18%)</span>
+                    <span>₹<span th:text="${#numbers.formatDecimal(order.gstAmount,0,'COMMA',2,'POINT')}">0</span></span>
+                </div>
+                <div class="flex justify-between text-sm py-2 border-b border-stone-100 text-green-600 font-semibold">
+                    <span>Delivery Charges</span>
+                    <span>NIL</span>
+                </div>
+                <div class="flex justify-between text-base py-3 font-bold text-stone-900 border-t-2 border-stone-900 mt-1">
+                    <span>Grand Total</span>
+                    <span class="text-amber-700">₹<span th:text="${#numbers.formatDecimal(order.grandTotal,0,'COMMA',2,'POINT')}">0</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- GST NOTE -->
+        <div class="bg-amber-50 border-l-4 border-amber-500 rounded-lg p-4 mb-6 text-xs text-stone-600">
+            <strong class="text-stone-800">GST Breakup:</strong>
+            CGST 9% + SGST 9% = 18% applied on taxable value ₹<span th:text="${#numbers.formatDecimal(order.subTotal,0,'COMMA',2,'POINT')}">0</span>.
+            HSN Code 9401 applies to seats and furniture items.
+            This is a computer-generated invoice — no physical signature required.
+        </div>
+
+        <!-- FOOTER -->
+        <div class="text-center border-t-2 border-dashed border-stone-200 pt-6">
+            <p class="text-sm text-stone-600 font-semibold">Thank you for choosing <span class="text-amber-700">WoodCraft Furniture</span> 🪑</p>
+            <p class="text-xs text-stone-400 mt-1">For any queries: support@woodcraft.in  |  +91 79 4567 8901</p>
+            <p class="text-xs text-stone-400 mt-1 italic">Keep this invoice safe — required for warranty claims and returns.</p>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

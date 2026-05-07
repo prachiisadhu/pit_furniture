@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice - WoodCraft Furniture</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brown-dark:#78350f;--brown-mid:#92400e;--brown-light:#b45309;
+  --amber:#d97706;--amber-light:#fef3c7;--amber-soft:#fffbeb;
+  --stone-900:#1c1917;--stone-800:#292524;--stone-700:#44403c;
+  --stone-600:#57534e;--stone-500:#78716c;--stone-400:#a8a29e;
+  --stone-300:#d6d3d1;--stone-200:#e7e5e4;--stone-100:#f5f5f4;
+  --green:#16a34a;--green-light:#dcfce7;
+  --shadow:0 4px 24px rgba(0,0,0,.08);--shadow-lg:0 8px 40px rgba(0,0,0,.14);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--stone-100);min-height:100vh;}
+
+header{background:linear-gradient(135deg,var(--brown-dark) 0%,var(--brown-mid) 100%);color:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.25);}
+.header-inner{max-width:900px;margin:auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;height:60px;}
+.logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;text-decoration:none;color:#fff;}
+nav a{color:rgba(255,255,255,.75);text-decoration:none;font-size:.85rem;margin-left:20px;}
+nav a:hover{color:#fff;}
+
+.page-actions{max-width:900px;margin:28px auto 20px;padding:0 24px;display:flex;gap:12px;flex-wrap:wrap;}
+.btn{display:inline-block;padding:10px 22px;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.85rem;border:none;cursor:pointer;transition:.2s;text-decoration:none;}
+.btn-dark{background:var(--stone-900);color:#fff;}
+.btn-dark:hover{background:var(--stone-700);}
+.btn-outline{background:transparent;border:1.5px solid var(--brown-dark);color:var(--brown-dark);}
+.btn-outline:hover{background:var(--amber-soft);}
+
+/* INVOICE */
+.invoice{max-width:860px;margin:0 auto 40px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:var(--shadow-lg);}
+
+.inv-header{background:linear-gradient(135deg,var(--stone-900) 0%,var(--stone-800) 100%);color:#fff;padding:40px 48px 32px;display:flex;justify-content:space-between;align-items:flex-start;gap:20px;}
+.brand-name{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;}
+.brand-gstin{font-size:.72rem;color:var(--stone-400);margin-top:5px;}
+.brand-addr{font-size:.75rem;color:var(--stone-400);margin-top:10px;line-height:1.7;}
+.inv-meta{text-align:right;flex-shrink:0;}
+.inv-title{font-size:1rem;font-weight:800;color:#fcd34d;letter-spacing:.06em;}
+.inv-meta p{font-size:.78rem;color:var(--stone-400);margin-top:5px;line-height:1.6;}
+.inv-meta strong{color:#fff;}
+
+.inv-body{padding:40px 48px;}
+
+.addr-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:36px;padding-bottom:28px;border-bottom:1.5px solid var(--stone-100);}
+.addr-section-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--stone-400);margin-bottom:10px;}
+.addr-text{font-size:.84rem;line-height:1.8;color:var(--stone-700);}
+.addr-text strong{color:var(--stone-900);font-size:.9rem;}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;margin-bottom:28px;}
+thead th{background:var(--stone-100);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--stone-500);padding:11px 14px;text-align:left;}
+thead th:last-child,thead th:nth-child(5),thead th:nth-child(6){text-align:right;}
+tbody td{padding:14px 14px;font-size:.84rem;color:var(--stone-700);border-bottom:1px solid var(--stone-100);}
+tbody td:last-child{text-align:right;font-weight:700;color:var(--stone-900);}
+tbody td:nth-child(5),tbody td:nth-child(6){text-align:right;}
+
+/* GST BOX */
+.gst-box{background:var(--amber-soft);border:1.5px solid var(--amber-light);border-radius:16px;padding:20px 24px;margin-bottom:28px;}
+.gst-box-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--brown-dark);margin-bottom:14px;}
+.gst-row{display:flex;justify-content:space-between;font-size:.83rem;color:var(--stone-600);padding:5px 0;border-bottom:1px solid rgba(217,119,6,.15);}
+.gst-row:last-child{border-bottom:none;}
+.gst-row.grand{font-size:1rem;font-weight:800;color:var(--stone-900);border-top:2px solid var(--amber);padding-top:13px;margin-top:4px;}
+.gst-row.grand span:last-child{color:var(--brown-dark);}
+
+.inv-notes{font-size:.78rem;color:var(--stone-500);line-height:1.8;background:var(--stone-50);border-radius:12px;padding:16px 20px;margin-bottom:0;}
+.inv-notes strong{color:var(--stone-700);}
+
+.inv-footer{border-top:1.5px solid var(--stone-100);padding:20px 48px;display:flex;justify-content:space-between;align-items:flex-end;background:var(--stone-50);}
+.footer-left p{font-size:.72rem;color:var(--stone-500);line-height:1.8;}
+.footer-right{text-align:right;}
+.signature-label{font-size:.68rem;color:var(--stone-400);margin-bottom:8px;}
+.signature-name{border-top:1.5px solid var(--stone-300);padding-top:8px;font-size:.78rem;font-weight:700;color:var(--stone-700);}
+
+/* PRINT */
+@media print{
+  header,.page-actions{display:none!important;}
+  body{background:#fff;}
+  .invoice{box-shadow:none;border-radius:0;max-width:100%;}
+}
+
+@media(max-width:640px){
+  .inv-header{flex-direction:column;}.inv-meta{text-align:left;}
+  .addr-grid{grid-template-columns:1fr;}
+  .inv-body,.inv-footer{padding:28px 20px;}
+  table{font-size:.75rem;}
+  thead th,tbody td{padding:8px 8px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="01-shop.html" class="logo">🪑 WoodCraft</a>
+    <nav>
+      <a href="01-shop.html">🛍️ Shop</a>
+      <a href="06-my-orders.html">📦 My Orders</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-actions no-print">
+  <button class="btn btn-dark" onclick="window.print()">🖨️ Print / Save as PDF</button>
+  <a href="javascript:history.back()" class="btn btn-outline">← Back to Order</a>
+  <a href="06-my-orders.html" class="btn btn-outline">📦 My Orders</a>
+</div>
+
+<div class="invoice">
+  <!-- HEADER -->
+  <div class="inv-header">
+    <div>
+      <div class="brand-name">🪑 WoodCraft</div>
+      <div class="brand-gstin">GSTIN: 24ABCDE1234F1Z5 &nbsp;|&nbsp; CIN: U31200GJ2020PTC123456</div>
+      <div class="brand-addr">
+        Plot 47, GIDC Estate, Sector-12, Naroda<br>
+        Ahmedabad – 380025, Gujarat, India<br>
+        📞 +91 79 4567 8900 &nbsp;|&nbsp; ✉️ billing@woodcraft.in
+      </div>
+    </div>
+    <div class="inv-meta">
+      <div class="inv-title">TAX INVOICE</div>
+      <p>Invoice No: <strong id="inv-no">INV-00000</strong></p>
+      <p>Invoice Date: <strong id="inv-date">—</strong></p>
+      <p>Order ID: <strong id="inv-order-id">WC-000000</strong></p>
+      <p>Payment: <strong id="inv-pay-mode">—</strong></p>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="inv-body">
+    <!-- Addresses -->
+    <div class="addr-grid">
+      <div>
+        <div class="addr-section-label">Bill To / Ship To</div>
+        <div class="addr-text">
+          <strong id="cust-name">Customer Name</strong><br>
+          <span id="cust-addr">Address</span><br>
+          📞 <span id="cust-phone">—</span><br>
+          ✉️ <span id="cust-email">—</span>
+        </div>
+      </div>
+      <div>
+        <div class="addr-section-label">Shipped From</div>
+        <div class="addr-text">
+          <strong>WoodCraft Furniture Pvt. Ltd.</strong><br>
+          Plot 47, GIDC Estate, Sector-12, Naroda<br>
+          Ahmedabad – 380025<br>
+          Gujarat, India
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Product Description</th>
+          <th>Category</th>
+          <th>HSN Code</th>
+          <th>Unit Price</th>
+          <th>Qty</th>
+          <th>Amount (₹)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td id="t-prod-name">—</td>
+          <td id="t-prod-cat">—</td>
+          <td>9403</td>
+          <td id="t-unit-price">₹0</td>
+          <td id="t-qty">1</td>
+          <td id="t-amount">₹0</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- GST Breakup -->
+    <div class="gst-box">
+      <div class="gst-box-title">📊 GST Breakup Details</div>
+      <div class="gst-row"><span>Taxable Value (Subtotal before GST)</span><span id="g-subtotal">₹0</span></div>
+      <div class="gst-row"><span>CGST @ 9% (Central GST)</span><span id="g-cgst">₹0</span></div>
+      <div class="gst-row"><span>SGST @ 9% (State GST)</span><span id="g-sgst">₹0</span></div>
+      <div class="gst-row" style="color:var(--stone-400);font-size:.75rem;"><span>IGST @ 18% (Inter-state, if applicable)</span><span id="g-igst">₹0</span></div>
+      <div class="gst-row"><span>Delivery / Shipping Charges</span><span style="color:var(--green);font-weight:600;">FREE</span></div>
+      <div class="gst-row" style="color:var(--stone-400);font-size:.75rem;"><span>Discount</span><span>₹0.00</span></div>
+      <div class="gst-row grand"><span>Grand Total (Inclusive of all taxes)</span><span id="g-grand">₹0</span></div>
+    </div>
+
+    <!-- Notes -->
+    <div class="inv-notes">
+      <strong>Amount in Words:</strong> <span id="amount-words">—</span><br>
+      <strong>HSN Code:</strong> 9403 — Other furniture and parts thereof (wood, metal, plastic)<br>
+      <strong>Terms:</strong> Goods once sold will not be taken back. Subject to Ahmedabad jurisdiction.<br>
+      <strong>Note:</strong> This is a computer-generated invoice and does not require a physical signature.
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="inv-footer">
+    <div class="footer-left">
+      <p>For billing queries: billing@woodcraft.in</p>
+      <p>Customer support: +91 79 4567 8900 (Mon–Sat, 9am–6pm)</p>
+      <p>GSTIN: 24ABCDE1234F1Z5 &nbsp;|&nbsp; PAN: ABCDE1234F</p>
+    </div>
+    <div class="footer-right">
+      <div class="signature-label">Authorised Signatory</div>
+      <div class="signature-name">WoodCraft Furniture Pvt. Ltd.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+function get(k){ return decodeURIComponent(params.get(k)||''); }
+function rupee(n){ return '₹' + parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+const payLabels = {upi:'UPI / QR Code',card:'Credit/Debit Card',netbanking:'Net Banking',cod:'Cash on Delivery'};
+const today = new Date();
+const dateStr = get('dateStr') || today.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+
+// Header
+document.getElementById('inv-no').textContent = get('invNo') || 'INV-' + String(Date.now()).slice(-5);
+document.getElementById('inv-date').textContent = dateStr;
+document.getElementById('inv-order-id').textContent = get('orderId') || 'WC-' + String(Date.now()).slice(-6);
+document.getElementById('inv-pay-mode').textContent = payLabels[get('payMode')] || get('payMode') || 'UPI';
+
+// Customer
+document.getElementById('cust-name').textContent = get('name');
+document.getElementById('cust-addr').innerHTML = `${get('address')}, ${get('city')}, ${get('state')} – ${get('pin')}`;
+document.getElementById('cust-phone').textContent = get('phone');
+document.getElementById('cust-email').textContent = get('email');
+
+// Product
+const sub   = parseFloat(get('sub'))   || 28999;
+const gst   = parseFloat(get('gst'))   || +(sub*0.18).toFixed(2);
+const grand = parseFloat(get('grand')) || +(sub+gst).toFixed(2);
+const cgst  = +(gst/2).toFixed(2);
+
+document.getElementById('t-prod-name').textContent = get('productName') || 'Oakwood 3-Seater Sofa';
+document.getElementById('t-prod-cat').textContent  = get('productCat')  || 'Sofa & Seating';
+document.getElementById('t-unit-price').textContent = rupee(get('unitPrice') || 28999);
+document.getElementById('t-qty').textContent        = get('qty') || '1';
+document.getElementById('t-amount').textContent     = rupee(sub);
+
+// GST
+document.getElementById('g-subtotal').textContent = rupee(sub);
+document.getElementById('g-cgst').textContent     = rupee(cgst);
+document.getElementById('g-sgst').textContent     = rupee(cgst);
+document.getElementById('g-igst').textContent     = rupee(gst);
+document.getElementById('g-grand').textContent    = rupee(grand);
+
+// Amount in Words
+document.getElementById('amount-words').textContent = toWords(grand) + ' Only';
+
+// ─── Number to Indian Words ───
+function toWords(n){
+  const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten',
+    'Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+  const b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+  function w(n){
+    if(n===0) return '';
+    if(n<20) return a[n];
+    if(n<100) return b[Math.floor(n/10)]+(n%10?' '+a[n%10]:'');
+    if(n<1000) return a[Math.floor(n/100)]+' Hundred'+(n%100?' '+w(n%100):'');
+    if(n<100000) return w(Math.floor(n/1000))+' Thousand'+(n%1000?' '+w(n%1000):'');
+    if(n<10000000) return w(Math.floor(n/100000))+' Lakh'+(n%100000?' '+w(n%100000):'');
+    return w(Math.floor(n/10000000))+' Crore'+(n%10000000?' '+w(n%10000000):'');
+  }
+  const int = Math.floor(n);
+  const dec = Math.round((n-int)*100);
+  return 'Rupees ' + w(int) + (dec ? ' and ' + w(dec) + ' Paise' : '');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background: #1e3a8a;
+    position: fixed;
+    padding: 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 10px 0;
+    padding: 8px;
+}
+
+.sidebar a:hover {
+    background: #3730a3;
+    border-radius: 5px;
+}
+
+/* Content spacing */
+.container {
+    margin-left: 240px;
+}
+
+/* Card style */
+.card {
+    border-radius: 12px;
+}

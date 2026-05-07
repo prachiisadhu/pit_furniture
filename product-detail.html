@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<!-- FILE: src/main/resources/templates/user/product-detail.html -->
+<!-- REPLACE your existing product-detail.html with this -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${product.name} + ' - WoodCraft'">Product</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'DM Sans', sans-serif; background: #f5f0eb; }
+        .serif { font-family: 'Playfair Display', serif; }
+        .qty-btn { transition: background .15s; }
+        .qty-btn:hover { background: #e0d8ce; }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header style="background: linear-gradient(135deg, #1c0f05 0%, #3b1f0a 100%);" class="text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center gap-3"><span class="text-2xl">🪑</span><span class="text-xl font-bold">WoodCraft</span></div>
+            <div class="flex items-center gap-6">
+                <a href="/user/shop" class="text-amber-200 hover:text-white text-sm">🛍️ Shop</a>
+                <a href="/user/my-orders" class="text-amber-200 hover:text-white text-sm">📦 My Orders</a>
+                <a href="/user/profile" class="text-amber-200 hover:text-white text-sm">👤 Profile</a>
+                <a href="/logout" class="bg-white bg-opacity-20 text-white text-sm font-semibold px-4 py-1.5 rounded-lg">Logout</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="max-w-5xl mx-auto px-6 py-10">
+
+    <!-- BREADCRUMB -->
+    <p class="text-stone-500 text-sm mb-6">
+        <a href="/user/shop" class="hover:text-amber-700 cursor-pointer">Shop</a>
+        › <span th:text="${product.category}" class="hover:text-amber-700 cursor-pointer"></span>
+        › <span th:text="${product.name}" class="font-semibold text-stone-800"></span>
+    </p>
+
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2">
+
+            <!-- PRODUCT IMAGE -->
+            <div class="bg-stone-50 flex items-center justify-center p-8 min-h-80">
+                <img th:if="${product.image != null and !#strings.isEmpty(product.image)}"
+                     th:src="${product.image}" alt="Product"
+                     class="max-h-80 max-w-full object-contain rounded-xl shadow-md">
+                <div th:unless="${product.image != null and !#strings.isEmpty(product.image)}"
+                     class="text-9xl select-none">🪑</div>
+            </div>
+
+            <!-- PRODUCT INFO -->
+            <div class="p-8">
+                <span class="text-xs font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-full"
+                      th:text="${product.category}">Category</span>
+
+                <h1 class="serif text-2xl font-bold text-stone-800 mt-3" th:text="${product.name}">Name</h1>
+                <p class="text-stone-500 text-sm mt-3 leading-relaxed" th:text="${product.description}">Description</p>
+
+                <div class="mt-6 border-t border-stone-100 pt-6">
+                    <span class="text-3xl font-bold text-stone-800">₹<span th:text="${#numbers.formatDecimal(product.price,0,'COMMA',2,'POINT')}">0</span></span>
+                    <div class="mt-2">
+                        <span th:if="${product.stock > 5}" class="text-green-600 text-sm font-semibold">
+                            ✅ In Stock (<span th:text="${product.stock}"></span> units available)
+                        </span>
+                        <span th:if="${product.stock > 0 and product.stock <= 5}" class="text-yellow-600 text-sm font-semibold">
+                            ⚠️ Only <span th:text="${product.stock}"></span> left — hurry!
+                        </span>
+                        <span th:if="${product.stock == 0}" class="text-red-500 text-sm font-semibold">
+                            ❌ Out of Stock
+                        </span>
+                    </div>
+                </div>
+
+                <!-- QTY + CHECKOUT (when in stock) -->
+                <div th:if="${product.stock > 0}" class="mt-6 space-y-4">
+                    <div>
+                        <label class="block text-stone-700 text-sm font-semibold mb-2">Quantity</label>
+                        <div class="flex items-center gap-3">
+                            <button type="button" onclick="changeQty(-1)"
+                                    class="qty-btn w-10 h-10 rounded-xl bg-stone-100 font-bold text-xl">−</button>
+                            <input type="number" id="qtyInput" value="1" min="1"
+                                   th:max="${product.stock}" oninput="updateTotal()"
+                                   class="w-20 text-center px-3 py-2 border border-stone-300 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <button type="button" onclick="changeQty(1)"
+                                    class="qty-btn w-10 h-10 rounded-xl bg-stone-100 font-bold text-xl">+</button>
+                        </div>
+                    </div>
+
+                    <!-- LIVE TOTAL -->
+                    <div class="bg-amber-50 rounded-xl p-4">
+                        <p class="text-stone-600 text-sm">
+                            Order Total:
+                            <span class="text-xl font-bold text-amber-700" id="totalDisplay">
+                                ₹<span th:text="${#numbers.formatDecimal(product.price,0,'COMMA',2,'POINT')}"></span>
+                            </span>
+                        </p>
+                        <p class="text-xs text-stone-400 mt-1">+ 18% GST will be added at checkout</p>
+                    </div>
+
+                    <!-- CHECKOUT BUTTON: goes to /user/checkout/{id}?quantity=N -->
+                    <a id="checkoutLink" th:href="@{/user/checkout/{id}(id=${product.id},quantity=1)}"
+                       class="block w-full bg-amber-700 text-white text-center py-3.5 rounded-xl font-bold text-sm hover:bg-amber-800 transition">
+                        🛒 Proceed to Checkout
+                    </a>
+                </div>
+
+                <!-- OUT OF STOCK MESSAGE -->
+                <div th:if="${product.stock == 0}"
+                     class="mt-6 bg-red-50 border border-red-200 text-red-600 text-sm text-center py-4 rounded-xl font-semibold">
+                    This product is currently out of stock
+                </div>
+
+                <a href="/user/shop" class="mt-4 block text-center text-stone-400 text-sm hover:text-amber-700 transition">
+                    ← Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const pricePerUnit = /*[[${product.price}]]*/ 0;
+    const maxStock     = /*[[${product.stock}]]*/ 99;
+    const productId    = /*[[${product.id}]]*/ 0;
+
+    function changeQty(delta) {
+        const input = document.getElementById('qtyInput');
+        let val = parseInt(input.value) + delta;
+        if (val < 1) val = 1;
+        if (val > maxStock) val = maxStock;
+        input.value = val;
+        updateTotal();
+    }
+
+    function updateTotal() {
+        const qty = parseInt(document.getElementById('qtyInput').value) || 1;
+        document.getElementById('totalDisplay').innerHTML =
+            '₹' + (pricePerUnit * qty).toLocaleString('en-IN', {minimumFractionDigits: 2});
+        // Update checkout link with quantity
+        document.getElementById('checkoutLink').href =
+            '/user/checkout/' + productId + '?quantity=' + qty;
+    }
+</script>
+
+</body>
+</html>
